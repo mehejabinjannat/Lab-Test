@@ -1,0 +1,63 @@
+import java.io.*;
+import java.util.*;
+
+public class MathPuzzle {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter your name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Enter difficulty level (easy/medium/hard): ");
+            String level = sc.nextLine();
+
+            File qFile = new File("questions.txt");
+            Scanner fileReader = new Scanner(qFile);
+
+            int score = 0;
+
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                System.out.print(line + " = ? ");
+                int correctAnswer = evaluate(line);
+                int userAns = sc.nextInt();
+
+                if (userAns == correctAnswer) {
+                    score++;
+                }
+            }
+
+            fileReader.close();
+
+            FileWriter writer = new FileWriter("score.txt", true);
+            writer.write("Player: " + name + ", Difficulty: " + level + ", Score: " + score + "\n");
+            writer.close();
+
+            System.out.println("Your Score = " + score);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        sc.close();
+    }
+
+    public static int evaluate(String expression) {
+        String[] parts = expression.split(" ");
+        int a = Integer.parseInt(parts[0]);
+        String op = parts[1];
+        int b = Integer.parseInt(parts[2]);
+
+        switch (op) {
+            case "+": return a + b;
+            case "-": return a - b;
+            case "*": return a * b;
+            case "/": return b != 0 ? a / b : 0;
+            default: return 0;
+        }
+    }
+}
